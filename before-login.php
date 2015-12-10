@@ -1,3 +1,132 @@
+<?php require_once('Connections/chz.php'); ?>
+
+<?php
+if (!function_exists("GetSQLValueString")) {
+function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
+{
+  if (PHP_VERSION < 6) {
+    $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
+  }
+
+  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
+
+  switch ($theType) {
+    case "text":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;    
+    case "long":
+    case "int":
+      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
+      break;
+    case "double":
+      $theValue = ($theValue != "") ? doubleval($theValue) : "NULL";
+      break;
+    case "date":
+      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
+      break;
+    case "defined":
+      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
+      break;
+  }
+  return $theValue;
+}
+}
+
+mysql_select_db($database, $dbhandle);
+$query_user = "SELECT * FROM userTable";
+$user = mysql_query($query_user) or die(mysql_error());
+$row_user = mysql_fetch_assoc($user);
+//$totalRows_user = mysql_num_rows($user);
+?>
+
+
+<?php
+// *********************************************** Validate request to login to this site.********************************************
+if (!isset($_SESSION)) {
+  session_start();
+}
+ if (isset ($_POST["email"])){
+
+	$_SESSION["email"] = $_POST["email"];
+  }
+$loginFormAction = $_SERVER['PHP_SELF'];
+if (isset($_GET['accesscheck'])) {
+  $_SESSION['PrevUrl'] = $_GET['accesscheck'];
+}
+
+if (isset($_POST['email'])) {
+  $loginUsername=$_POST['email'];
+  $password=$_POST['password'];
+  $MM_fldUserAuthorization = "";
+  $MM_redirectLoginSuccess = "index.php";
+  $MM_redirectLoginFailed = "login.php";
+  $MM_redirecttoReferrer = false;
+  mysql_select_db($database, $dbhandle);
+  
+  $LoginRS__query=sprintf("SELECT email, password FROM userTable WHERE email=%s AND password=%s",
+    GetSQLValueString($loginUsername, "text"), GetSQLValueString($password, "text")); 
+   
+  $LoginRS = mysql_query($LoginRS__query) or die(mysql_error());
+  $loginFoundUser = mysql_num_rows($LoginRS);
+  if ($loginFoundUser) {
+     $loginStrGroup = "";
+    
+	if (PHP_VERSION >= 5.1) {session_regenerate_id(true);} else {session_regenerate_id();}
+    //declare two session variables and assign them
+    $_SESSION['MM_Username'] = $loginUsername;
+    $_SESSION['MM_UserGroup'] = $loginStrGroup;	      
+
+    if (isset($_SESSION['PrevUrl']) && false) {
+      $MM_redirectLoginSuccess = $_SESSION['PrevUrl'];	
+    }
+    //header("Location: " . $MM_redirectLoginSuccess );
+	
+	header("location:after-login.php");
+  }
+  else {
+    //header("Location: ". $MM_redirectLoginFailed );
+	
+	echo "<script type='text/javascript'>alert('Wrong password or email address!');</script>";
+	
+	header("location:before-login.php");
+  }
+}
+//****************************************************************************************
+
+
+//******************************************sign up********************************************
+if ((isset($_POST["signup"]))) {
+$P = "P";
+  $insertSQL = sprintf("INSERT INTO userTable (reviewerID,reviewerName,email,password) VALUES (%s, %s, %s, %s)",
+                       GetSQLValueString($_POST["new-username"], "text"),
+					             GetSQLValueString($_POST["new-username"], "text"), //ASIN
+								 GetSQLValueString($_POST["new-email"], "text"),
+                       GetSQLValueString($_POST["new-password"], "text"));	
+$_SESSION["email"]=$_POST["new-email"];
+$_SESSION["username"] = $_POST["new-username"];	 
+ 
+$Result1 = mysql_query($insertSQL) or die(mysql_error());
+
+header("location:Guide.php");
+}
+//**************************************************************************************************
+
+
+
+
+
+
+
+
+?>
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <!-- Website template by freewebsitetemplates.com -->
 <html>
@@ -22,10 +151,10 @@
 						<a href="news.php">What's New</a>
 					</li>
 					<li>
-						<a href="scents.php">Scents</a>
+						<a href="popular.php">Popular</a>
 					</li>
-					<li>
-						<a href="Guide.php">Shop</a>
+					<li >
+						<a href="Guide.php">Guide</a>
 					</li>
 					<li>
 						<a href="about.php">About</a>
@@ -34,7 +163,10 @@
 						<a href="blog.php">Blog</a>
 					</li>
 					<li class="selected">
+                        
 						<a href="before-login.php">Log in</a>
+                        
+                        
 					</li>
 				</ul>
 			</div>
@@ -42,72 +174,31 @@
 		<div id="contents">
 			
 			<div id="contact" class="body">
-<div id="sidebar">
-		  <div id="connect">
-						<h3>Connect with us</h3>
-						<ul>
-							<li>
-								<a href="http://freewebsitetemplates.com/go/facebook/" target="_blank" class="facebook"></a>
-							</li>
-							<li>
-								<a href="http://freewebsitetemplates.com/go/twitter/" target="_blank" class="twitter"></a>
-							</li>
-							<li>
-								<a href="http://freewebsitetemplates.com/go/googleplus/" target="_blank" class="googleplus"></a>
-							</li>
-							<li>
-								<a href="http://freewebsitetemplates.com/go/youtube/" target="_blank" class="vimeo"></a>
-							</li>
-						</ul>
-					</div>
-					<div class="section">
-						<h3>Contact Details</h3>
-						<ul id="infos">
-							<li>
-								<span class="address">123 Canyon Road<br> Beverly Hills, CA 12345<br> USA</span>
-							</li>
-							<li>
-								<span class="telephone">+01.234.456.786<br> +01.345.678.890</span>
-							</li>
-							<li>
-								<span class="email">info@themargaritafragrance.com</span>
-							</li>
-							<li>
-								<span class="web">www.themargaritafragrance.com</span>
-							</li>
-						</ul>
-					</div>
-					<form action"index.html" method="post" id="newsletter">
-						<h3>Subscribe to our newsletter</h3>
-						<input type="text" value="" class="txtfield">
-						<input type="submit" value="Sign up!" class="btn">
-					</form>
-					<div>
-						<a href="index.php"><img src="images/shop-now.jpg" alt="Img"></a>
-					</div>
-				</div>
+            <?php include_once "sidebar.php"?>
+  
 				<div id="main">
 					<div>
                        <h4>New User? Signed up!</h4>
-                      <form action="index.php" method="post" class="">
-		                    <label>First Name</label>
-							<input type="text" class="txtfield" value="">
-                            <label>Last Name</label>
-							<input type="text" class="txtfield" value="">
+                       
+                       
+                      <form method="post" id="form-signup" name="form-signup" class="">
+		                    
+                            <label>User Name</label>
+							<input type="text" name="new-username"class="txtfield" value="">
 							<label>Email</label>
-							<input type="text" class="txtfield" value="">
+							<input type="text" name="new-email" class="txtfield" value="">
 							<label>Create Password</label>
-							<input type="text" class="txtfield" value="">
-                            <label>Varify Password</label>
-							<input type="text" class="txtfield" value="">
-							<input type="submit" value="Submit" class="btn">
+							<input type="password" name="new-password" class="txtfield" value="">
+							<input type="submit" name="signup" value="Submit" class="btn">
 						</form>
+                        
+                        
                         <h4>LOG IN!</h4>
-                      <form action="index.php" method="post" class="">
+                        <form ACTION="<?php echo $loginFormAction; ?>" id="form1" name="form1" method="POST">
 							<label>Email</label>
-							<input type="text" class="txtfield" value="">
+							<input type="text" name="email" class="txtfield" value="">
 							<label>Password</label>
-							<input type="text" class="txtfield" value="">
+							<input type="password" name="password" class="txtfield" value="">
 							<input type="submit" value="Submit" class="btn">
 						</form>
 					</div>
@@ -124,10 +215,10 @@
 						<a href="news.php">What's New</a>
 					</li>
 					<li>
-						<a href="scents.php">Scents</a>
+						<a href="popular.php">Popular</a>
 					</li>
-					<li>
-						<a href="Guide.php">Shop</a>
+					<li >
+						<a href="Guide.php">Guide</a>
 					</li>
 					<li>
 						<a href="about.php">About</a>
@@ -136,11 +227,14 @@
 						<a href="blog.php">Blog</a>
 					</li>
 					<li class="selected">
-						<a href="before-login.php">Contact</a>
+                        
+						<a href="before-login.php">Log in</a>
+                        
+                        
 					</li>
 				</ul>
 				<p>
-					© The Margarita Fragrance 2012. All Rights Reserved.
+					© The Benthos BeautyCare 2015. All Rights Reserved.
 				</p>
 			</div>
 		</div>

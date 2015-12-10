@@ -35,46 +35,82 @@ function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDe
 
 
 <?php
+
 session_start();
-mysql_select_db($database_chz, $chz);
-$query_rsRate = "SELECT * FROM reviewTable, productTable WHERE productID>0";
+mysql_select_db($database, $dbhandle);
 
-
+//display product info
+$query_rsRate = "SELECT * FROM producttable WHERE productID>0";
 if(isset($_SESSION["rate"]))
 {
-	$PRODUCTID=$_SESSION["rate"];  // $_SESSION["rate"] is the ASIN
-	$query_rsRate .=" AND productTable.ASIN = '$PRODUCTID' ";
+        $PRODUCTID=$_SESSION["rate"];  // $_SESSION["rate"] is the ASIN
+        $query_rsRate .=" AND producttable.ASIN = '$PRODUCTID' ";    
 }
-
-$rsRate = mysql_query($query_rsRate, $chz) or die(mysql_error());
+$rsRate = mysql_query($query_rsRate) or die(mysql_error());
 $row_rsRate = mysql_fetch_assoc($rsRate);
-$totalRows_rsRate = mysql_num_rows($rsRate);
+
+
+
+
+//display comment info
+$query_rsRate1 = "SELECT producttable.ASIN, reviewtable.ASIN, reviewtable.reviewerID, 
+reviewtable.reviewText, reviewtable.rating, reviewtable.summary
+FROM producttable,reviewtable WHERE productID>0";
+if(isset($_SESSION["rate"]))
+{
+        $PRODUCTID1=$_SESSION["rate"];  // $_SESSION["rate"] is the ASIN
+        $query_rsRate1 .=" AND producttable.ASIN = '$PRODUCTID1' ";
+		$query_rsRate1 .=" AND reviewtable.ASIN = '$PRODUCTID1' ";
+		    
+}
+$query_rsRate1 .=" ORDER BY reviewtable.recordID DESC "; 
+$rsRate1 = mysql_query($query_rsRate1) or die(mysql_error());
+$row_rsRate1 = mysql_fetch_assoc($rsRate1);
+
+
+
+
+////////**************************insert rate info**************************************
+//name the input data
+
+$REVIEWERID = $_SESSION["reviewerID"];
+$REVIEWTEXT = $_POST["reviewtext"];
+//$PRODUCTID=$_SESSION["rate"];  // $_SESSION["rate"] is the ASIN
+$RATING = $_POST["rating"];
+$SUMMARY = $_POST["summary"];
+
+if ((isset($_POST["submit-rate"]))&&($_SESSION["username"])) {
+  $insertSQL = sprintf("INSERT INTO reviewtable (reviewerID,ASIN,reviewText,rating,summary) VALUES (%s, %s, %s, %s, %s)",
+                       GetSQLValueString($REVIEWERID, "text"),
+					             GetSQLValueString($PRODUCTID, "text"), //ASIN
+								 GetSQLValueString($REVIEWTEXT, "text"),
+					             GetSQLValueString($RATING, "int"),
+                       GetSQLValueString($SUMMARY, "text"));
+					   
+				   
+$Result1 = mysql_query($insertSQL) or die(mysql_error());
+
+
+//header("location:after-login.php");
+echo "<script> window.location.replace('after-login.php') </script>";
+}
+
+if ((isset($_POST["submit-rate"]))&&(!$_SESSION["username"])) {
+echo "<script type='text/javascript'>alert('You cannot comment unless login!');</script>";
+}
+
+////////*******************************insert rate info***********************************
+
+
+
 
 ?>
 
-<?php
-$editFormAction = $_SERVER['PHP_SELF'];
-if (isset($_SERVER['QUERY_STRING'])) {
-  $editFormAction .= "?" . htmlentities($_SERVER['QUERY_STRING']);
-}
-if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
-  $insertSQL = sprintf("INSERT INTO reviewTable(rating,ASIN,reviewerID, reviewerText, summary) VALUES (%s,%s, %s, %s, %s)",
-                       GetSQLValueString($_POST['rating'], "int"),
-					             GetSQLValueString($_SESSION["rate"], "text"),
-					             GetSQLValueString($row_rsRate['peopleId'], "int"),
-                       GetSQLValueString($_POST['d'], "text"));
-					  
-  mysql_select_db($database_chz, $chz);
-  $Result1 = mysql_query($insertSQL, $chz) or die(mysql_error());
 
-  $insertGoTo = "product-rate.php";
-  if (isset($_SERVER['QUERY_STRING'])) {
-    $insertGoTo .= (strpos($insertGoTo, '?')) ? "&" : "?";
-    $insertGoTo .= $_SERVER['QUERY_STRING'];
-  }
-  header(sprintf("Location: %s", $insertGoTo));  // <-------may need to modify
-}
-?>
+
+
+
+
 
 
 
@@ -143,50 +179,78 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 				<div id="main">
 					<div>
                     
-                        <h2>Rate For It</h2>
-                        <table width="285" id="product-homeshow-table">
+                    
+                    
+                    
+                      <h2>Rate For It</h2>
+                        <table width="75%" id="product-homeshow-table">
                           <tbody>
                             <tr>
-                              <td width="288"><img src="images/perfume-bottles.jpg" alt="Img"> 
-                                <h3> brand name</h3>
-                                <h5> product name </h5>
-                                  <table width="100%"  cellpadding="10px">
-                                    <tbody>
-                                      <tr>
-                                        <td width="50%"><button class="buy">Price</button></td>
-                                        <td width="50%"><button class="buy">Rate</button></td>
-                                      </tr>
-                                    </tbody>
-                                </table>
+                              <td ><img style="max-width:140px;" src="<?php echo $row_rsRate['itemImage']; ?>"></td>
+                              <td>
+                              
+                              <p><?php echo $row_rsRate['itemBrand']; ?> : <?php echo $row_rsRate['itemName']; ?></p>
+                             
+                              <p><?php echo $row_rsRate['itemRating']; ?></p>
+                              <p>$<?php echo $row_rsRate['itemPrice']; ?></p>
+                              
+                              <P style="text-align:left;"><?php echo $row_rsRate['description']; ?></P>
+                              
+                              
+                              
                               </td>
                             </tr>
                           </tbody>
                         </table>
-                      <form action="index.php" method="post" class="">
-	                    <label>Your Rate</label>
-							<input type="number" name="quantity" min="0" max="5"><br><br>
+                        
+                        
+                        
+                        
+                        
+                        <form method="post" class="" id="form1" id="form1">
+                      <label>Your Rate</label>
+							<input type="number" name="rating" min="0" max="5"><br><br>
+                        <label>Summary</label>
+							<input type="text" class="txtfield" name="summary" placeholder="Enter your summary here" value="">
 						<label>Message</label>
-							<textarea placeholder="Enter Comment here..."></textarea>
-							<input type="submit" value="Submit" class="btn">
+							<textarea placeholder="Enter Comment here..." name="reviewtext"></textarea>
+							<input type="submit" name="submit-rate" value="Submit" class="btn">
+                            
 						</form>
-                        <h2>View Comment</h2>
                         
+                        <?php if ($row_rsRate1 ){?>
                         
-                        <table width="567" id="other-comment-table">
-                          <tbody>
-                            <tr>
-                              <th width="122" style="text-align: center; color: #FFFFFF;">User name</th>
-                              <th width="109" style="text-align: center; color: #FFFFFF;">Rate</th>
-                              <th width="320" style="text-align: center; color: #F7F7F7;">Comment</th>
-                            </tr>
-                            <tr>
-                              <td>&nbsp;</td>
-                              <td>&nbsp;</td>
-                              <td>&nbsp;</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                         
+                            <table width="90%"  id="other-comment-table">
+                                  <tbody>
+                                   <th class="row1">
+                                   Rating
+                                   </th >
+                                   <th class="row2">
+                                   Comments
+                                   </th>
+                                   
+                                    <?php do { ?>
+                                    <tr>
+                                    <td style="text-align:center;">
+                                    <b><?php echo $row_rsRate1['rating']; ?> </b>
+                                    </td>
+                                      <td>
+                                      <p><b><?php echo $row_rsRate1['summary']; ?> </b><br>
+                                      By <?php echo $row_rsRate1['reviewerID']; ?><br>
+                                      <?php echo $row_rsRate1['reviewText']; ?></p>
+                                      </td>
+                                    
+                                    </tr>
+                                    <?php } while ($row_rsRate1 = mysql_fetch_assoc($rsRate1)); ?>  
+                                  </tbody>
+                                </table>
+                           <?php }?> 
+                           
+                           
+                           
+                           <?php if ($row_rsRate1===NULL ){?>
+                           <p style="text-align:center;"> Be the first one to comment on this product ?</p>
+                           <?php }?> 
                         
                         </div>
 					</div>
@@ -207,7 +271,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 						<a href="news.php">What's New</a>
 					</li>
 					<li>
-						<a href="scents.php">Scents</a>
+						<a href="popular.php">Popular</a>
 					</li>
 					<li class="selected">
 						<a href="Guide.php">Guide</a>
@@ -219,11 +283,17 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 						<a href="blog.php">Blog</a>
 					</li>
 					<li>
-						<a href="before-login.php">Contact</a>
+						    <?php if (isset($_SESSION["username"])) { ?>
+							<a href="after-login.php"><?php echo $_SESSION["username"]; ?></a>
+						    <?php }?>
+                            
+						    <?php if (! isset($_SESSION["username"])) { ?>
+							 <a href="before-login.php">Log in</a>
+						    <?php }?>
 					</li>
 				</ul>
 				<p>
-					© The Margarita Fragrance 2012. All Rights Reserved.
+					© The Benthos BeautyCare 2015. All Rights Reserved.
 				</p>
 			</div>
 		</div>

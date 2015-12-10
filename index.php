@@ -1,9 +1,11 @@
+<?php  session_start(); ?>
+
 <!DOCTYPE html>
 <!-- Website template by freewebsitetemplates.com -->
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>The Margarita Website Template</title>
+	<title>The Margarita Website recommendation</title>
 	<link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -18,12 +20,14 @@
 					<li class="selected">
 						<a href="index.php">Home</a>
 					</li>
-					
 					<li>
-						<a href="scents.php">Scents</a>
+						<a href="news.php">What's New</a>
 					</li>
 					<li>
-						<a href="Guide.php">Shop</a>
+						<a href="popular.php">Popular</a>
+					</li>
+					<li >
+						<a href="Guide.php">Guide</a>
 					</li>
 					<li>
 						<a href="about.php">About</a>
@@ -32,17 +36,20 @@
 						<a href="blog.php">Blog</a>
 					</li>
 					<li>
-						<a href="before-login.php">Contact</a>
-					</li>
-                    <li>
-						<a href="before-login.php">LOG IN</a>
+						<?php if (isset($_SESSION["username"])) { ?>
+							<a href="after-login.php"><?php echo $_SESSION["username"]; ?></a>
+						    <?php }?>
+                            
+						    <?php if (! isset($_SESSION["username"])) { ?>
+							 <a href="before-login.php">Log in</a>
+						    <?php }?>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div id="contents">
 			<div id="adbox">
-				<img src="images/perfume-ad.jpg" alt="Img">
+				<img style="width:930px; height:470px;" src="images/title.jpg" alt="Img">
 			</div>
 			<div id="body">
 				<div id="sidebar">
@@ -50,7 +57,7 @@
 						<a href="index.php"><img src="images/new-scent.jpg" alt="Img"></a>
 					</div>
 					<div>
-						<a href="index.php"><img src="images/new-fave.jpg" alt="Img"></a>
+						<a href="index.php"><img src="images/shop-now.jpg" alt="Img"></a>
 					</div>
 					<form action="index.php" method="post" id="newsletter">
 						<h3>Subscribe to our newsletter</h3>
@@ -80,18 +87,17 @@
 					<ul>
 						<li>
 							<img src="images/perfume-test.jpg" alt="Img">
-							<h4>Lorem ipsum</h4>
+							<h4>Winter Season</h4>
 							<p>
-								In hendrerit sollicitudin eros, sit amet tincidunt magna condimentum id. Phasellus nec elementum quam. Vivamus at lectus purus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-							</p>
+								There are plenty of things we appreciate about the winter season, like the homemade feasts and holiday cheer. What we don’t love, however, is dealing with the chalky makeup look that comes with dry skin around this time of the year.
+</p>
 							<a href="index.php" class="more">&gt;&gt;&gt; Learn More</a>
 						</li>
 						<li>
-							<img src="images/perfumes.jpg" alt="Img">
-							<h4>Dolor sit amet</h4>
+							<img style="height:195px; width:257px;" src="images/ad.jpg" alt="Img">
+							<h4>BeautyCare</h4>
 							<p>
-								In hendrerit sollicitudin eros, sit amet tincidunt magna condimentum id. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent molestie metus sed turpis sollicitudin egestas scelerisque ligula lacinia.
-							</p>
+								Let’s face it: You’ll never really forget those classic beauty staples you owned way before Sephora came along. Generally speaking, product formulas have greatly improved since the days of your Jessica McClintock prom dress and boy-band crush . </p>
 							<a href="index.php" class="more">&gt;&gt;&gt; Learn More</a>
 						</li>
 					</ul>
@@ -101,13 +107,13 @@
 						<h3>Blog</h3>
 						<ul class="blog">
 							<li>
-								&#8226; <a href="blog.php">We Have Free Templates for Everyone <span class="time">01 June 2012</span></a>
+								&#8226; <a href="blog.php">We Have Free recommendations for Everyone <span class="time">01 June 2012</span></a>
 							</li>
 							<li>
 								&#8226; <a href="blog.php">Be Part of Our Community <span class="time">01 June 2012</span></a>
 							</li>
 							<li>
-								&#8226; <a href="blog.php">Template Details <span class="time">01 June 2012</span></a>
+								&#8226; <a href="blog.php">recommendation Details <span class="time">01 June 2012</span></a>
 							</li>
 						</ul>
 					</div>
@@ -145,7 +151,7 @@
 						<a href="news.php">What's New</a>
 					</li>
 					<li>
-						<a href="scents.php">Scents</a>
+						<a href="popular.php">Scents</a>
 					</li>
 					<li>
 						<a href="Guide.php">Shop</a>
@@ -161,7 +167,7 @@
 					</li>
 				</ul>
 				<p>
-					© The Margarita Fragrance 2012. All Rights Reserved.
+					© The Benthos BeautyCare 2015. All Rights Reserved.
 				</p>
 			</div>
 		</div>

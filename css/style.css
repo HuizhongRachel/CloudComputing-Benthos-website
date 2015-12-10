@@ -12,6 +12,29 @@ body {
 	margin: 0;
 }
 /*----------------------------- ANDED BY MYSELF ----------------------*/
+
+
+#link:hover{
+	text-decoration: none;}
+
+#main img {
+	height:200px;
+	max-width:200px;
+}
+
+#productimg {
+	display:table-cell;
+	float:left;
+	width:210px;
+	height:210px;
+}
+#productimg img{
+	display: inline-block;
+    vertical-align: middle;
+
+
+}
+
 .filter {
 	height:20px;}
 
@@ -158,14 +181,22 @@ body {
 #other-comment-table tr {
 	border:1px white;
 	background-color:#F4DDAB;}
-#other-comment-table th,td {
-	padding:10px;}
+#other-comment-table td{
+	text-align:left;}
 #other-comment-table th {
+	padding:10px;
+	color:white;
 	text:white;
 	border:1px white;
-	background-color:#BD178A;}
+	background-color:#BD178A;
+	}
+	
+.row1{width:10%;}	
+	
+	
 #product-homeshow-table {
-	border:1px solid #BD178A;
+	border: 1px solid #cccccc;
+	
 	margin:auto;
 	}
 #user-profile-table{
@@ -422,6 +453,7 @@ img {
 	border: 0;
 }
 /*------------------------------ HEADER ------------------------------*/
+
 #header {
 	height: 114px;
 	padding: 26px 0 0;
@@ -1151,8 +1183,8 @@ img {
 #contact form textarea {
 	color: #7d7c7c;
 	font-size: 12px;
-	height: 215px;
-	line-height: 18px;
+	height: 80px;
+	line-height: 30px;
 	width: 398px;
 	border: 1px solid #cccccc;
 	margin: 0 0 12px;

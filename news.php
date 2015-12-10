@@ -1,9 +1,11 @@
+<?php  session_start(); ?>
+
 <!DOCTYPE html>
 <!-- Website template by freewebsitetemplates.com -->
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>What's New? - The Margarita Website Template</title>
+	<title>What's New? - The Margarita Website recommendation</title>
 	<link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
@@ -22,9 +24,9 @@
 						<a href="news.php">What's New</a>
 					</li>
 					<li>
-						<a href="scents.php">Scents</a>
+						<a href="popular.php">Popular</a>
 					</li>
-					<li>
+					<li >
 						<a href="Guide.php">Guide</a>
 					</li>
 					<li>
@@ -34,7 +36,13 @@
 						<a href="blog.php">Blog</a>
 					</li>
 					<li>
-						<a href="before-login.php">Contact</a>
+						<?php if (isset($_SESSION["username"])) { ?>
+							<a href="after-login.php"><?php echo $_SESSION["username"]; ?></a>
+						    <?php }?>
+                            
+						    <?php if (! isset($_SESSION["username"])) { ?>
+							 <a href="before-login.php">Log in</a>
+						    <?php }?>
 					</li>
 				</ul>
 			</div>
@@ -67,13 +75,13 @@
 						<h3>Popular Posts</h3>
 						<ul id="posts">
 							<li>
-								&#8226; <a href="blog.php">We Have More Templates for You <span class="time">01 June 2012</span></a>
+								&#8226; <a href="blog.php">We Have More recommendations for You <span class="time">01 June 2012</span></a>
 							</li>
 							<li>
 								&#8226; <a href="blog.php">Be Part of Our Community <span class="time">01 June 2012</span></a>
 							</li>
 							<li>
-								&#8226; <a href="blog.php">Template Details <span class="time">01 June 2012</span></a>
+								&#8226; <a href="blog.php">recommendation Details <span class="time">01 June 2012</span></a>
 							</li>
 						</ul>
 					</div>
@@ -81,12 +89,12 @@
 						<a href="index.php"><img src="images/new-scent.jpg" alt="Img"></a>
 					</div>
 					<div>
-						<a href="index.php"><img src="images/new-fave.jpg" alt="Img"></a>
+						<a href="index.php"><img src="images/shop-now.jpg" alt="Img"></a>
 					</div>
 				</div>
 				<ul id="news" class="list">
 					<li>
-						<img src="images/perfume-bottles.jpg" alt="Img">
+						<img style="height:195px; width:257px;" src="images/ad.jpg" alt="Img">
 						<h4>Lorem ipsum</h4>
 						<p>
 							In hendrerit sollicitudin eros, sit amet tincidunt magna condimentum id. Phasellus nec elementum quam. Vivamus at lectus purus. Cum sociis natoque penatibus et magnis 
@@ -95,7 +103,7 @@
 						<a href="news.php" class="more">&gt;&gt;&gt; Learn More</a>
 					</li>
 					<li>
-						<img src="images/perfume-colors.jpg" alt="Img">
+						<img style="height:195px; width:257px;" src="images/ad4.jpg" alt="Img">
 						<h4>Dolor sit amet</h4>
 						<p>
 							In hendrerit sollicitudin eros, sit amet tincidunt magna condimentum id. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent molestie 
@@ -104,7 +112,7 @@
 						<a href="news.php" class="more">&gt;&gt;&gt; Learn More</a>
 					</li>
 					<li>
-						<img src="images/perfume-blue.jpg" alt="Img">
+						<img style="height:195px; width:257px;" src="images/ad2.jpg" alt="Img">
 						<h4>Lorem ipsum</h4>
 						<p>
 							In hendrerit sollicitudin eros, sit amet tincidunt magna condimentum id. Phasellus nec elementum quam. Vivamus at lectus purus. Praesent molestie metus sed turpis sollicitudin 
@@ -113,7 +121,7 @@
 						<a href="news.php" class="more">&gt;&gt;&gt; Learn More</a>
 					</li>
 					<li>
-						<img src="images/perfumes.jpg" align="Img">
+						<img style="height:195px; width:257px;" src="images/ad3.jpg" alt="Img">
 						<h4>Dolor sit amet</h4>
 						<p>
 							In hendrerit sollicitudin eros, sit amet tincidunt magna condimentum id. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Praesent molestie 
@@ -134,7 +142,7 @@
 						<a href="news.php">What's New</a>
 					</li>
 					<li>
-						<a href="scents.php">Scents</a>
+						<a href="popular.php">Scents</a>
 					</li>
 					<li>
 						<a href="Guide.php">Shop</a>
@@ -150,7 +158,7 @@
 					</li>
 				</ul>
 				<p>
-					© The Margarita Fragrance 2012. All Rights Reserved.
+					© The Benthos BeautyCare 2015. All Rights Reserved.
 				</p>
 			</div>
 		</div>
